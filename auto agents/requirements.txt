@@ -1,0 +1,9 @@
+# Core dependencies
+gym==0.26.2
+stable-baselines3==2.7.1
+matplotlib==3.8.2
+numpy==1.26.4
+
+# Compatibility and logging
+shimmy>=0.2.1
+tensorboard>=2.20.0

@@ -1,0 +1,88 @@
+Predator–Prey RL: Setup & Run (Step by Step)
+============================================
+
+Prereqs
+-------
+- Python 3.10+ installed.
+- Git (optional, if you want to clone).
+
+1) Get the code
+---------------
+- Download or clone the project into a folder (e.g., `auto-agents`).
+
+2) Create and activate a virtual environment
+--------------------------------------------
+- Windows (PowerShell):
+  ```powershell
+  python -m venv .venv
+  .\.venv\Scripts\Activate
+  ```
+- macOS/Linux:
+  ```bash
+  python -m venv .venv
+  source .venv/bin/activate
+  ```
+
+3) Install dependencies
+-----------------------
+```bash
+pip install -r requirements.txt
+```
+
+4) Train a role (predator or prey)
+----------------------------------
+- Train predator with DQN:
+  ```bash
+  python train_and_eval.py --role predator --timesteps 50000
+  ```
+- Train prey with DQN:
+  ```bash
+  python train_and_eval.py --role prey --timesteps 50000
+  ```
+- Flags you can tweak:
+  - `--timesteps` (default 50000) to increase/decrease training.
+  - `--episodes` (default 400) for the tabular Q-learning baseline.
+  - `--seed` for reproducibility.
+
+5) What gets produced
+---------------------
+- PNG plots:
+  - `predator_learning.png` / `prey_learning.png`: reward curves (Q-learning vs DQN rollouts).
+  - `predator_survival_hist.png` / `prey_survival_hist.png`: steps until capture/survival distribution.
+- TensorBoard logs in `logs/` for the DQN run (optional).
+
+6) (Optional) View TensorBoard
+------------------------------
+```bash
+tensorboard --logdir logs
+```
+Then open the provided local URL in a browser.
+
+7) Customize environment/agents
+-------------------------------
+- In `predator_prey_env.py`, adjust:
+  - `grid_size`, `n_predators`, `n_prey`, `vision_radius`, `max_steps`.
+  - Rewards inside `_compute_reward`.
+- In `train_and_eval.py`, adjust DQN hyperparameters in `TrainConfig` (learning rate, buffer size, gamma, exploration schedule, etc.).
+
+8) Run quick smoke test (no training)
+-------------------------------------
+- Activate the venv, then:
+  ```bash
+  python - <<'PY'
+  from predator_prey_env import make_env
+  env = make_env(train_role="predator")
+  obs = env.reset()
+  for _ in range(5):
+    action = env.action_space.sample()
+    obs, reward, done, info = env.step(action)
+    print(obs, reward, done, info)
+  print("ok")
+  PY
+  ```
+
+Notes
+-----
+- Actions: 0 stay, 1 up, 2 down, 3 left, 4 right.
+- Observation: ego (x, y) normalized plus relative (dx, dy) to nearest opponent within vision; zero otherwise.
+- Rewards: predator +10 per capture, -0.01/step; prey +0.1/step, -10 when caught.
