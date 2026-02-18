@@ -206,5 +206,5 @@ The evaluation loop runs 100 deterministic episodes (ε=0) after training and pr
 
 ---
 
-**Author**
+## Author
 Project developed by **Iheb Bousselmi** (Student ID: 5870020) as part of a university reinforcement learning project.
